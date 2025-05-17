@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task 5 - To-Do App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      margin-top: 50px;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 500px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input, select, button {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    input {
+      flex: 2;
+    }
+
+    select {
+      flex: 1;
+    }
+
+    button {
+      flex: 1;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f0f0f0;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+    }
+
+    li span {
+      flex: 1;
+    }
+
+    li button {
+      background-color: #dc3545;
+    }
+
+    li button:hover {
+      background-color: #b02a37;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📝 My To-Do List</h1>
+
+    <div class="input-group">
+      <input type="text" id="taskInput" placeholder="Enter a new task..." />
+      <select id="category">
+        <option value="General">General</option>
+        <option value="Work">Work</option>
+        <option value="Study">Study</option>
+      </select>
+      <button onclick="addTask()">Add</button>
+    </div>
+
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+  // Load tasks from localStorage on page load
+  window.onload = function() {
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    tasks.forEach(task => createTaskElement(task.text, task.category));
+  };
+
+  function addTask() {
+    const input = document.getElementById("taskInput");
+    const category = document.getElementById("category").value;
+    const taskText = input.value.trim();
+    if (!taskText) return;
+
+    createTaskElement(taskText, category);
+    saveTask(taskText, category);
+
+    input.value = "";
+  }
+
+  function createTaskElement(text, category) {
+    const list = document.getElementById("taskList");
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span>${text} (${category})</span>
+      <button>Delete</button>
+    `;
+
+    // Delete button event
+    li.querySelector("button").onclick = function() {
+      removeTask(text, category);
+      li.remove();
+    };
+
+    list.appendChild(li);
+  }
+
+  function saveTask(text, category) {
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    tasks.push({ text, category });
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+
+  function removeTask(text, category) {
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    tasks = tasks.filter(task => !(task.text === text && task.category === category));
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+</script>
+
+</body>
+</html>
